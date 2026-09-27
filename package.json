@@ -1,5 +1,5 @@
 {
-  "name": "parents-and-children",
+  "name": "ananda-gopal",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
@@ -11,10 +11,10 @@
     "db:push": "drizzle-kit push",
     "deploy": "./deploy.sh",
     "deploy:quick": "git add . && git commit -m 'Quick deploy' && git push heroku main",
-    "serve:pm2": "npx pm2 start npm --name parents-and-children -- start --update-env",
-    "pm2:stop": "npx pm2 stop parents-and-children || true",
-    "pm2:restart": "npx pm2 restart parents-and-children || npx pm2 start npm --name parents-and-children -- start --update-env",
-    "pm2:logs": "npx pm2 logs parents-and-children --lines 200"
+    "serve:pm2": "npx pm2 start npm --name ananda-gopal -- start --update-env",
+    "pm2:stop": "npx pm2 stop ananda-gopal || true",
+    "pm2:restart": "npx pm2 restart ananda-gopal || npx pm2 start npm --name ananda-gopal -- start --update-env",
+    "pm2:logs": "npx pm2 logs ananda-gopal --lines 200"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

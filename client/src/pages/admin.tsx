@@ -20,7 +20,7 @@ export default function AdminPanel() {
   const [payments, setPayments] = useState<PendingPayment[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [adminEmail] = useState("parents-and-children@outlook.com");
+  const [adminEmail] = useState("Ananda_Gopal@outlook.com");
 
   const fetchData = async () => {
     try {

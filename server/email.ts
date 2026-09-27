@@ -304,7 +304,7 @@ export async function sendUserRegistrationConfirmationEmail(
   const text = `
 Здравствуйте!
 
-Ваша регистрация на сайте parents-and-children успешно зафиксирована.
+Ваша регистрация на сайте Ananda Gopal успешно зафиксирована.
 
 Дальнейший шаг — оплата доступа. Как только оплата будет подтверждена,
 вы получите отдельное письмо с активацией.
@@ -366,7 +366,7 @@ export async function sendUserRegistrationConfirmationEmail(
 
     <p>Здравствуйте!</p>
 
-    <p>Ваша регистрация на сайте <strong>parents-and-children</strong> успешно зафиксирована.</p>
+    <p>Ваша регистрация на сайте <strong>Ananda Gopal</strong> успешно зафиксирована.</p>
 
     <p class="note">Дальнейший шаг — оплата доступа. Как только оплата будет подтверждена, вы получите отдельное письмо с активацией.</p>
 
@@ -660,7 +660,7 @@ export async function sendPaymentApprovedEmail(userEmail: string): Promise<boole
   const text = `
 Поздравляем! Ваша заявка Принята!
 
-Доступ ко всем данным сайта parents-and-children уже выполнен!
+Доступ ко всем данным сайта Ananda Gopal уже выполнен!
   `.trim();
 
   const html = `
@@ -719,7 +719,7 @@ export async function sendPaymentApprovedEmail(userEmail: string): Promise<boole
 
     <p class="note">Поздравляем! Ваша заявка Принята!</p>
 
-    <p>Доступ ко всем данным сайта parents-and-children уже выполнен!</p>
+    <p>Доступ ко всем данным сайта Ananda Gopal уже выполнен!</p>
 
     <div class="footer">
       <p>Автоматическое уведомление системы платежей</p>

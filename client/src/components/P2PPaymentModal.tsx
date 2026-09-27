@@ -10,7 +10,7 @@ export function P2PPaymentModal({ isOpen, onClose, userEmail }: P2PPaymentModalP
   const cardNumber = "5168 7451 2747 0224";
   const recipient = "Урiзко Олександр Леонiдович";
   const amount = "100";
-  const contactEmail = "parents-and-children@outlook.com";
+  const contactEmail = "Ananda_Gopal@outlook.com";
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

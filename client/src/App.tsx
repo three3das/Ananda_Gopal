@@ -32,7 +32,7 @@ import PaymentsPage from "@/pages/PaymentsPage";
 
 export default function App() {
   useEffect(() => {
-    document.title = "Parents and children";
+    document.title = "Ananda Gopal";
   }, []);
 
   return (
