@@ -134,9 +134,9 @@ export function SplashScreen({ onSelect, onDismiss }: SplashScreenProps) {
             className="flex flex-col items-center h-full justify-between gap-3 px-4 max-w-md text-center md:h-auto md:justify-start md:items-end md:text-right md:gap-6 md:px-6"
           >
             <h1 className="text-lg font-bold leading-tight md:text-2xl" style={{ color: GOLD }}>
-              <span className="whitespace-nowrap">Сайт «Сознания Кришны»</span>
+              <span className="whitespace-nowrap">Сайт «Ананда Гопал»</span>
               <br />
-              для тех, кто любит жизнь!
+              для любознательных людей!
             </h1>
 
             {/* ⚠️ ПРАВКА: подзаголовок "Начните свое путешествие с
