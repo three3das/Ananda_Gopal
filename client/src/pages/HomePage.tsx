@@ -32,10 +32,24 @@ import { WheelHeader, WheelFooter, WheelPageShell } from "@/components/SiteHeade
 // монтировании выполняет тот же handleFooterClick, что и обычный клик
 // по футеру, так что переходы гарантированно совпадают.
 
+// Текст кнопки "Вход и благотворительный взнос", разбитый вручную на 3
+// строки — иначе не помещается в круг.
+const CHARITY_LABEL_LINES = ["Желаю", "поддержать", "проект"];
+
+// Колесо кнопки "Свойства": сектор №1 — "Словарь...", сектор №12
+// (последний) — "Поддержать благотворительность проекта"; остальные пустые.
 const DICTIONARY_LABELS: string[][] = Array.from(
   { length: SECTOR_COUNT },
-  (_, i) => (i === 0 ? ["Словарь", "используемых", "на сайте", "слов"] : [])
+  (_, i) =>
+    i === 0
+      ? ["Узнать", "нужное", "слово"]
+      : i === SECTOR_COUNT - 1
+      ? CHARITY_LABEL_LINES
+      : []
 );
+
+// Кликабелен только последний сектор; "Словарь" пока без действия.
+const DICTIONARY_CLICKABLE_INDICES = [SECTOR_COUNT - 1];
 
 function splitLabelIntoLines(label: string): string[] {
   const words = label.split(" ");
@@ -131,25 +145,13 @@ const PRAYOJANA_WHEEL_LABELS: string[][] = Array.from(
   (_, i) => (i < PRAYOJANA_ITEMS.length ? splitLabelIntoLines(PRAYOJANA_ITEMS[i]) : [])
 );
 
-// "Путеводитель" — колесо, открывающееся вместо мгновенного редиректа
-// на /login для неавторизованного пользователя. Пока заполнен только
-// сектор №1 ("Вход и благотворительный взнос"); остальные 11 — пустые
-// заглушки, видимые, но некликабельные. Текст разбит вручную на 4
-// строки с переносом слова "благотворительный" по дефису между
-// строками 2 и 3 — иначе не помещается в круг.
-const GUIDE_ITEMS: string[] = [
-  "Вход и благотворительный взнос",
-];
-
-const GUIDE_CLICKABLE_INDICES = [0];
-
-function splitGuideLabel(): string[] {
-  return ["Вход", "и благотво-", "рительный", "взнос."];
-}
-
+// Колесо "Предмет изучения" (открывается кнопкой "all-data" для
+// неавторизованного пользователя). Единственный сектор, который здесь
+// был ("Желаю поддержать проект"), перенесён в 12-й сектор
+// колеса "Свойства сайта" — теперь все 12 секторов пустые.
 const GUIDE_WHEEL_LABELS: string[][] = Array.from(
   { length: SECTOR_COUNT },
-  (_, i) => (i === 0 ? splitGuideLabel() : [])
+  () => []
 );
 
 type GameType =
@@ -183,6 +185,7 @@ function getGameWheelLabels(games: { icon: string; label: string }[]): string[][
   );
 }
 
+// ⚠️ ИЗМЕНЕНО: добавлено состояние "home" — колесо "Домашняя страница".
 type ViewState =
   | "main"
   | "games"
@@ -191,7 +194,8 @@ type ViewState =
   | "abhidheya"
   | "prayojana"
   | "guide"
-  | "guide-info";
+  | "guide-info"
+  | "home";
 
 interface HomePageProps {
   // Ключ кнопки, выбранной на заставке SplashGate (см. комментарий
@@ -222,12 +226,13 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
   const gameWheelLabels = useMemo(() => getGameWheelLabels(games), [games]);
 
   // "main" — колесо тем (категорий), "games" — колесо с 7 играми,
-  // "dictionary" — страница "Словарь используемых на сайте слов".
+  // "dictionary" — колесо "Свойства сайта" (сектор 1 — "Словарь...",
+  // сектор 12 — "Вход и благотворительный взнос").
   // "sambandha"/"abhidheya"/"prayojana" — колёса из трёх кнопок
-  // хедера. "guide" — колесо-путеводитель (открывается вместо
-  // мгновенного /login для неавторизованного пользователя),
-  // "guide-info" — экран пояснения про благотворительность внутри
-  // сектора №1 путеводителя.
+  // хедера. "guide" — колесо "Предмет изучения" (пока пустое),
+  // "home" — колесо "Домашняя страница" (пока пустое),
+  // "guide-info" — экран пояснения про благотворительность,
+  // открывается 12-м сектором колеса "Свойства сайта".
   const [view, setView] = useState<ViewState>("main");
 
   const handleSelectCategory = (index: number) => {
@@ -243,8 +248,10 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
     }
   };
 
-  const handleGuideSectorClick = (index: number) => {
-    if (index === 0) {
+  // Клик по сектору колеса "Свойства сайта": только последний (12-й) —
+  // "Желаю поддержать проект".
+  const handleDictionarySectorClick = (index: number) => {
+    if (index === SECTOR_COUNT - 1) {
       setView("guide-info");
     }
   };
@@ -261,8 +268,17 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
     }
   };
 
-  const handleFooterClick = (key: string) => {
-    setActiveFooterNav(key);
+  // Ключи нижнего футера (см. footerNav в siteNav.ts) → ключи, которые
+  // понимает логика ниже (те же, что использует заставка SplashScreen).
+  const FOOTER_KEY_ALIASES: Record<string, string> = {
+    stable: "all-data", // "Предмет изучения"
+    home: "your-page", // "Домашняя страница"
+    dynamic: "site-page", // "Свойства сайта"
+  };
+
+  const handleFooterClick = (rawKey: string) => {
+    setActiveFooterNav(rawKey);
+    const key = FOOTER_KEY_ALIASES[rawKey] ?? rawKey;
     if (key === "languages") {
       // Открытие/закрытие выпадашки теперь целиком внутри WheelFooter
       // (см. SiteHeaderFooter.tsx) — здесь ничего дополнительно делать
@@ -281,7 +297,10 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
         setLocation("/payments");
       }
     } else if (key === "your-page") {
-      // Пока без действия.
+      // ⚠️ ИСПРАВЛЕНО: раньше здесь было "Пока без действия", из-за
+      // чего кнопка "Домой" только меняла подсветку и не открывала
+      // колесо. Теперь открывает колесо "Домашняя страница".
+      setView("home");
     }
   };
 
@@ -303,19 +322,18 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
           ...item,
           label: isAuthenticated
             ? `Добро пожаловать, ${getWelcomeName(user)}!`
-            : "Начальная страница сайта",
+            : "Домашняя страница",
         }
       : item
   );
 
   // "← Назад" на любом колесе, кроме колеса тем ("main"), обычно
   // возвращает на колесо тем (домашний экран). Единственное
-  // исключение — экран "guide-info": оттуда возврат ведёт на
-  // колесо-путеводитель ("guide"), а не сразу на главное колесо,
-  // чтобы не терять контекст путеводителя.
+  // исключение — экран "guide-info": оттуда возврат ведёт на колесо
+  // "Свойства сайта" ("dictionary"), откуда он был открыт.
   const handleBack = () => {
     if (view === "guide-info") {
-      setView("guide");
+      setView("dictionary");
     } else {
       setView("main");
     }
@@ -366,7 +384,12 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
         )}
 
         {view === "dictionary" && (
-          <Wheel12 labels={DICTIONARY_LABELS} centerLabel="Все страницы сайта" />
+          <Wheel12
+            labels={DICTIONARY_LABELS}
+            centerLabel="Свойства сайта"
+            clickableIndices={DICTIONARY_CLICKABLE_INDICES}
+            onSectorClick={handleDictionarySectorClick}
+          />
         )}
 
         {view === "sambandha" && (
@@ -382,11 +405,16 @@ export default function IshvaraPage({ initialFooterKey }: HomePageProps = {}) {
         )}
 
         {view === "guide" && (
+          <Wheel12 labels={GUIDE_WHEEL_LABELS} centerLabel="Предмет изучения" />
+        )}
+
+        {view === "home" && (
           <Wheel12
-            labels={GUIDE_WHEEL_LABELS}
-            centerLabel="Начальная страница сайта"
-            clickableIndices={GUIDE_CLICKABLE_INDICES}
-            onSectorClick={handleGuideSectorClick}
+            labels={CATEGORY_WHEEL_LABELS}
+            centerLabel="Домашняя страница"
+            activeIndex={0}
+            clickableIndices={CATEGORY_CLICKABLE_INDICES}
+            onSectorClick={handleSelectCategory}
           />
         )}
 
