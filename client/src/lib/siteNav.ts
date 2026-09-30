@@ -20,7 +20,7 @@ export const headerNav: NavItem[] = [
 //               служения проекта и т.д.).
 // Логика того, что открывается по каждой кнопке, — в HomePage.tsx.
 export const footerNav: NavItem[] = [
-  { key: "stable", label: "Предмет" },
-  { key: "home", label: "Домой" },
-  { key: "dynamic", label: "Свойства" },
+  { key: "stable", label: "Предмет изучения" },
+  { key: "home", label: "Домашняя страница" },
+  { key: "dynamic", label: "Свойства сайта" },
 ];

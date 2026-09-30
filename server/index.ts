@@ -5,19 +5,11 @@ import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 import XLSX from "xlsx";
-import paymentsRouter from "./routes/payments";
 
 // Load environment variables from .env file
 dotenv.config({ override: true });
 
 const app = express();
-
-// ─── ВАЖНО: webhook должен быть ДО express.json() ────────────────────────────
-// NOWPayments отправляет сырой body — его нельзя парсить через JSON
-app.use(
-  "/api/payments/webhook",
-  express.raw({ type: "application/json" })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -66,9 +58,6 @@ app.get("/api/audio/ishvara", (req, res) => {
     res.status(500).json({ error: "failed to read xlsx file" });
   }
 });
-
-// ─── Подключить роутер платежей ───────────────────────────────────────────────
-app.use("/api/payments", paymentsRouter);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -119,15 +108,6 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-
-  // ─── Запустить фоновые задачи (проверка истёкших подписок) ───────────────
-  const { startCronJobs } = await import("./services/cron");
-  startCronJobs();
-
-  // ─── Запустить Telegram-бота (уведомления администратору о регистрации
-  // и о нажатии "Оплачено", с кнопками Разрешить/Отменить) ──────────────────
-  const { startTelegramBot } = await import("./telegram");
-  startTelegramBot();
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5001 if not specified.

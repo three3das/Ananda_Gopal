@@ -16,16 +16,11 @@ export type Language =
   | 'uk'
   | 'ur'
   | 'fr'
-  | 'hi';
+  | 'hi'
+  | 'bg';
 
-// Единый список всех поддерживаемых кодов языка — используется в
-// LanguageContext.tsx для проверки значения, прочитанного из
-// localStorage. Если в будущем добавляется новый язык, его код нужно
-// внести И сюда, И в languageOptions в IshvaraPage.tsx (с тем же
-// кодом, что и в таблице public.letter_writing_systems в Supabase) —
-// иначе повторится тот же баг.
 export const SUPPORTED_LANGUAGE_CODES: readonly Language[] = [
-  'sa', 'en', 'ar', 'bn', 'id', 'es', 'pt', 'ru', 'uk', 'ur', 'fr', 'hi',
+  'sa', 'en', 'ar', 'bn', 'id', 'es', 'pt', 'ru', 'uk', 'ur', 'fr', 'hi', 'bg',
 ];
 
 export interface Translations {
@@ -104,36 +99,6 @@ export interface Translations {
   // Celebration messages
   celebrations: readonly string[];
 
-  // Authentication
-  auth: {
-    login: string;
-    createAccount: string;
-    logout: string;
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    forgotPassword: string;
-    orContinueWith: string;
-    continueWithGoogle: string;
-    alreadyHaveAccount: string;
-    dontHaveAccount: string;
-    signInHere: string;
-    createAccountHere: string;
-    loginRequired: string;
-    passwordRequirements: {
-      title: string;
-      length: string;
-      number: string;
-      uppercase: string;
-      lowercase: string;
-    };
-    newsletter: string;
-    termsText: string;
-    termsLink: string;
-    privacyLink: string;
-  };
-
   // Progress modal
   progress: {
     title: string;
@@ -159,17 +124,6 @@ export interface Translations {
   home: {
     title: string;
     subtitle: string;
-  };
-
-  // Modal messages
-  modal: {
-    accessDenied: string;
-    accessDeniedMessage: string;
-    register: string;
-    signIn: string;
-    subscriptionRequired: string;
-    subscriptionMessage: string;
-    getSubscription: string;
   };
 
   // Game type names for GameTitle

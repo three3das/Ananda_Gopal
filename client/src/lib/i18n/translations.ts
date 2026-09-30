@@ -1,6 +1,6 @@
 import type { Language, Translations } from './types';
 
-export const translations: Record<Language, Translations> = {
+export const translations: Record<'ru' | 'en' | 'uk' | 'sa', Translations> = {
   ru: {
     // Header
     settings: 'Настройки',
@@ -122,47 +122,6 @@ export const translations: Record<Language, Translations> = {
     audioPicture: 'Слушание слова',
     audioSentence: 'Слушание предложения',
     gameInstructions: 'Выполни задание',
-
-    // Authentication
-    auth: {
-      login: 'Войти',
-      createAccount: 'Регистрация',
-      logout: 'Выйти',
-      email: 'Электронная почта',
-      password: 'Пароль',
-      firstName: 'Имя',
-      lastName: 'Фамилия',
-      forgotPassword: 'Забыли пароль?',
-      orContinueWith: 'или продолжить с',
-      continueWithGoogle: 'Продолжить с Google',
-      alreadyHaveAccount: 'Уже есть аккаунт?',
-      dontHaveAccount: 'Нет аккаунта?',
-      signInHere: 'Войдите здесь',
-      createAccountHere: 'Создайте здесь',
-      loginRequired: 'Войдите, чтобы играть',
-      passwordRequirements: {
-        title: 'Пароль должен содержать:',
-        length: '8 или более символов',
-        number: 'Минимум 1 цифру',
-        uppercase: 'Минимум 1 заглавную букву',
-        lowercase: 'Минимум 1 строчную букву',
-      },
-      newsletter: 'Хочу получать новости и обновления по email',
-      termsText: 'Создавая аккаунт, вы соглашаетесь с',
-      termsLink: 'Условиями использования',
-      privacyLink: 'Политикой конфиденциальности',
-    },
-
-    // Modal messages
-    modal: {
-      accessDenied: 'Добро пожаловать!',
-      accessDeniedMessage: 'Чтобы пользоваться этим разделом, пожалуйста, пройдите регистрацию и оформите подписку для полного доступа ко всем возможностям.',
-      register: 'Зарегистрироваться',
-      signIn: 'Войти',
-      subscriptionRequired: 'Отличный выбор!',
-      subscriptionMessage: 'Осталось только оформить подписку, чтобы открыть все задания и возможности!',
-      getSubscription: 'Оформить подписку',
-    },
   },
 
   en: {
@@ -286,47 +245,6 @@ export const translations: Record<Language, Translations> = {
     audioPicture: 'Listening to word',
     audioSentence: 'Listening to sentence',
     gameInstructions: 'Complete the task',
-
-    // Authentication
-    auth: {
-      login: 'Log in',
-      createAccount: 'Registration',
-      logout: 'Log out',
-      email: 'Email',
-      password: 'Password',
-      firstName: 'First name',
-      lastName: 'Last name',
-      forgotPassword: 'Forgot password?',
-      orContinueWith: 'or continue with',
-      continueWithGoogle: 'Continue with Google',
-      alreadyHaveAccount: 'Already have an account?',
-      dontHaveAccount: "Don't have an account?",
-      signInHere: 'Sign in here',
-      createAccountHere: 'Create one here',
-      loginRequired: 'Please log in to play',
-      passwordRequirements: {
-        title: 'Password must contain:',
-        length: '8 or more characters',
-        number: 'At least 1 number',
-        uppercase: 'At least 1 uppercase letter',
-        lowercase: 'At least 1 lowercase letter',
-      },
-      newsletter: 'I want to receive news and updates via email',
-      termsText: 'By creating an account, you agree to our',
-      termsLink: 'Terms of Service',
-      privacyLink: 'Privacy Policy',
-    },
-
-    // Modal messages
-    modal: {
-      accessDenied: 'Welcome!',
-      accessDeniedMessage: 'To use this section, please register and subscribe for full access to all features.',
-      register: 'Register',
-      signIn: 'Sign In',
-      subscriptionRequired: 'Great choice!',
-      subscriptionMessage: 'Just subscribe to unlock all tasks and features!',
-      getSubscription: 'Get Subscription',
-    },
   },
 
   uk: {
@@ -450,47 +368,6 @@ export const translations: Record<Language, Translations> = {
     audioPicture: 'Слухання слова',
     audioSentence: 'Слухання речення',
     gameInstructions: 'Виконай завдання',
-
-    // Authentication
-    auth: {
-      login: 'Увійти',
-      createAccount: 'Реєстрація',
-      logout: 'Вийти',
-      email: 'Електронна пошта',
-      password: 'Пароль',
-      firstName: "Ім'я",
-      lastName: 'Прізвище',
-      forgotPassword: 'Забули пароль?',
-      orContinueWith: 'або продовжити з',
-      continueWithGoogle: 'Продовжити з Google',
-      alreadyHaveAccount: 'Вже є акаунт?',
-      dontHaveAccount: 'Немає акаунту?',
-      signInHere: 'Увійдіть тут',
-      createAccountHere: 'Створіть тут',
-      loginRequired: 'Увійдіть, щоб грати',
-      passwordRequirements: {
-        title: 'Пароль повинен містити:',
-        length: '8 або більше символів',
-        number: 'Мінімум 1 цифру',
-        uppercase: 'Мінімум 1 велику літеру',
-        lowercase: 'Мінімум 1 малу літеру',
-      },
-      newsletter: 'Хочу отримувати новини та оновлення по email',
-      termsText: 'Створюючи акаунт, ви погоджуєтесь з',
-      termsLink: 'Умовами використання',
-      privacyLink: 'Політикою конфіденційності',
-    },
-
-    // Modal messages
-    modal: {
-      accessDenied: 'Вітаю Вас!',
-      accessDeniedMessage: 'Будь-ласка, використовуйте даний розділ за допомогою "Оформлення підписки та підтвердження авторизації" для повного доступу до всіх можливостей.',
-      register: 'Зареєструватися',
-      signIn: 'Увійти',
-      subscriptionRequired: 'Чудовий вибір!',
-      subscriptionMessage: 'Залишилось лише оформити підписку, щоб відкрити всі завдання та можливості!',
-      getSubscription: 'Оформити підписку',
-    },
   },
 
   sa: {
@@ -614,55 +491,26 @@ export const translations: Record<Language, Translations> = {
     audioPicture: 'शब्द-श्रवणम् (Śabda-śravaṇam)',
     audioSentence: 'वाक्य-श्रवणम् (Vākya-śravaṇam)',
     gameInstructions: 'कार्यं पूरय (Kāryaṃ pūraya)',
-
-    // Authentication
-    auth: {
-      login: 'प्रवेशः (Praveśaḥ)',
-      createAccount: 'पञ्जीकरणम् (Pañjīkaraṇam)',
-      logout: 'निर्गमः (Nirgamaḥ)',
-      email: 'ईमेल (Īmel)',
-      password: 'गुप्तशब्दः (Guptaśabdaḥ)',
-      firstName: 'प्रथम-नाम (Prathama-nāma)',
-      lastName: 'कुल-नाम (Kula-nāma)',
-      forgotPassword: 'गुप्तशब्दं विस्मृतवान्? (Guptaśabdaṃ vismṛtavān?)',
-      orContinueWith: 'अथवा एतेन सह चल (Athavā etena saha cala)',
-      continueWithGoogle: 'गूगलेन सह चल (Gūgalena saha cala)',
-      alreadyHaveAccount: 'खाता अस्ति किम्? (Khātā asti kim?)',
-      dontHaveAccount: 'खाता नास्ति किम्? (Khātā nāsti kim?)',
-      signInHere: 'अत्र प्रविश (Atra praviśa)',
-      createAccountHere: 'अत्र सृज (Atra sṛja)',
-      loginRequired: 'क्रीडितुं प्रविश (Krīḍituṃ praviśa)',
-      passwordRequirements: {
-        title: 'गुप्तशब्दे भवेत्: (Guptaśabde bhavet:)',
-        length: '८ वा अधिकानि चिह्नानि (8 vā adhikāni cihnāni)',
-        number: 'न्यूनतमम् १ अङ्कः (Nyūnatamam 1 aṅkaḥ)',
-        uppercase: 'न्यूनतमम् १ बृहत् अक्षरम् (Nyūnatamam 1 bṛhat akṣaram)',
-        lowercase: 'न्यूनतमम् १ लघु अक्षरम् (Nyūnatamam 1 laghu akṣaram)',
-      },
-      newsletter: 'ईमेलद्वारा समाचारान् अद्यतनानि च प्राप्तुम् इच्छामि (Īmeldvārā samācārān adyatanāni ca prāptum icchāmi)',
-      termsText: 'खातां सृजन् त्वं अङ्गीकरोषि (Khātāṃ sṛjan tvaṃ aṅgīkaroṣi)',
-      termsLink: 'उपयोग-शर्ताः (Upayoga-śartāḥ)',
-      privacyLink: 'गोपनीयता-नीतिः (Gopanīyatā-nītiḥ)',
-    },
-
-    // Modal messages
-    modal: {
-      accessDenied: 'स्वागतम्! (Svāgatam!)',
-      accessDeniedMessage: 'एतस्य विभागस्य उपयोगाय पञ्जीकरणं कुरु सदस्यतां च प्राप्नुहि सर्वेषां सुविधानां पूर्ण-प्रवेशाय। (Etasya vibhāgasya upayogāya pañjīkaraṇaṃ kuru sadasyatāṃ ca prāpnuhi sarveṣāṃ suvidhānāṃ pūrṇa-praveśāya.)',
-      register: 'पञ्जीकरणम् (Pañjīkaraṇam)',
-      signIn: 'प्रवेशः (Praveśaḥ)',
-      subscriptionRequired: 'उत्तमः चयनः! (Uttamaḥ cayanaḥ!)',
-      subscriptionMessage: 'सर्वाणि कार्याणि सुविधाश्च उद्घाटयितुं केवलं सदस्यतां प्राप्नुहि! (Sarvāṇi kāryāṇi suvidhāśca udghaṭayituṃ kevalaṃ sadasyatāṃ prāpnuhi!)',
-      getSubscription: 'सदस्यतां प्राप्नुहि (Sadasyatāṃ prāpnuhi)',
-    },
   },
 };
 
+// Флаги/коды для всех 13 языков (тип Language). Переводы интерфейса выше
+// есть только для ru/en/uk/sa — для остальных языков берётся английский
+// (см. LanguageContext.tsx).
 export const LANGUAGE_FLAGS: Record<Language, string> = {
+  sa: 'SA',
   en: 'EN',
+  ar: 'AR',
+  bn: 'BN',
+  id: 'ID',
+  es: 'ES',
+  pt: 'PT',
   ru: 'RU',
   uk: 'UA',
-  sa: 'SA',
+  ur: 'UR',
+  fr: 'FR',
+  hi: 'HI',
+  bg: 'BG',
 };
 
 export const DEFAULT_LANGUAGE: Language = 'sa';

@@ -1,5 +1,5 @@
 // ─── SiteHeaderFooter.tsx ──────────────────────────────────────────────────
-// Объединённый файл: полные SiteHeader/SiteFooter (логотип, авторизация,
+// Объединённый файл: полные SiteHeader/SiteFooter (логотип,
 // инфо-карточки — используются на большинстве страниц) и упрощённые
 // WheelHeader/WheelFooter + WheelPageShell для страниц-«колёс»
 // (PaymentsPage, IshvaraPage и т.п.).
@@ -8,18 +8,12 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { NavItem } from "@/lib/siteNav";
 import { LanguageScriptMenuPanel } from "@/components/LanguageScriptMenuPanel";
 
-// ═══ SiteHeader — полный хедер (логотип, языки, авторизация) ═══
+// ═══ SiteHeader — полный хедер (логотип, языки) ═══
 // ─── SiteHeader — shared header for all pages ────────────────────────────────
-// Logo · LanguageSwitcher · AuthDropdown (with modals)
+// Logo · LanguageSwitcher
 
 import { motion } from "framer-motion";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { AuthDropdown } from "./AuthDropdown";
-import { LoginModal } from "./LoginModal";
-import { CreateAccountModal } from "./CreateAccountModal";
-import { ProgressModal } from "./ProgressModal";
-import { P2PPaymentModal } from "./P2PPaymentModal";
-import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/i18n";
 
 interface SiteHeaderProps {
@@ -27,23 +21,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ onBack }: SiteHeaderProps = {}) {
-  const { user } = useAuth();
-
-  const [showLogin, setShowLogin] = useState(false);
-  const [showCreate, setShowCreate] = useState(false);
-  const [showProgress, setShowProgress] = useState(false);
-  const [showP2PModal, setShowP2PModal] = useState(false);
-
-  const sessionId = user ? String(user.id) : "";
   const { language } = useLanguage();
-
-  const handleSubscribeClick = async () => {
-    if (!user) {
-      setShowLogin(true);
-      return;
-    }
-    setShowP2PModal(true);
-  };
 
   const handleIshvaraClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -139,7 +117,7 @@ export function SiteHeader({ onBack }: SiteHeaderProps = {}) {
                 fontWeight: 700,
               }}
             >
-              {language === "uk" ? "Освітній сайт" : "Образовательный сайт"}            </p>
+              {language === "uk" ? "Освітній сайт" : "Образовательный сайт"}     </p>
           </div>
         </div>
 
@@ -323,41 +301,8 @@ export function SiteHeader({ onBack }: SiteHeaderProps = {}) {
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <LanguageSwitcher />
-          <AuthDropdown
-            onLoginClick={() => setShowLogin(true)}
-            onCreateAccountClick={() => setShowCreate(true)}
-            onProgressClick={user ? () => setShowProgress(true) : undefined}
-            onSubscribeClick={handleSubscribeClick}
-          />
         </div>
       </motion.header>
-
-      <P2PPaymentModal
-        isOpen={showP2PModal}
-        onClose={() => setShowP2PModal(false)}
-        userEmail={user?.email || ""}
-      />
-      <ProgressModal
-        isOpen={showProgress}
-        onClose={() => setShowProgress(false)}
-        sessionId={sessionId}
-      />
-      <LoginModal
-        isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
-        onSwitchToCreateAccount={() => {
-          setShowLogin(false);
-          setShowCreate(true);
-        }}
-      />
-      <CreateAccountModal
-        isOpen={showCreate}
-        onClose={() => setShowCreate(false)}
-        onSwitchToLogin={() => {
-          setShowCreate(false);
-          setShowLogin(true);
-        }}
-      />
     </>
   );
 }
@@ -506,13 +451,6 @@ export function WheelHeader({
   );
 }
 
-// WheelFooter — та же панель кнопок, что и раньше, но теперь кнопка с
-// key === "languages" ("Меню") сама открывает выпадашку с
-// LanguageScriptMenuPanel внутри — это тот самый компонент
-// последовательного выбора (Шаги 0/2/4), который раньше был
-// захардкожен прямо в IshvaraPage.tsx. Перенос сюда даёт эту кнопку
-// автоматически любой странице, использующей WheelFooter (не только
-// IshvaraPage).
 export function WheelFooter({
   items,
   activeKey,

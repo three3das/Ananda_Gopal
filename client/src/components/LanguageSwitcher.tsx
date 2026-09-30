@@ -3,13 +3,26 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage, LANGUAGE_FLAGS, type Language } from "@/lib/i18n";
 
+// В выпадающем списке этого переключателя остаются 4 языка.
+// Полный набор из 13 языков выбирается на колесе языков.
 const LANGUAGES: Language[] = ['sa', 'uk', 'en', 'ru'];
 
+// Названия нужны для ВСЕХ языков типа Language, потому что текущий язык
+// (например, выбранный на колесе) может быть любым из 13.
 const LANGUAGE_NAMES: Record<Language, string> = {
-  ru: 'Русский',
-  en: 'English',
-  uk: 'Українська',
   sa: 'संस्कृतम् (Saṃskṛtam)',
+  en: 'English',
+  ar: 'العربية',
+  bn: 'বাংলা',
+  id: 'Indonesia',
+  es: 'Español',
+  pt: 'Português',
+  ru: 'Русский',
+  uk: 'Українська',
+  ur: 'اردو',
+  fr: 'Français',
+  hi: 'हिन्दी',
+  bg: 'Български',
 };
 
 export function LanguageSwitcher() {

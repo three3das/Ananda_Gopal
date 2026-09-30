@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { type Word, type GameType, type MaterialWorld } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 import { GAME_CONFIG } from "@/lib/constants";
 import { useLanguage } from "@/lib/i18n";
-import { useAuth } from "@/lib/auth";
 import { GameHeader } from "@/components/GameHeader";
 import { GameMenu } from "@/components/GameMenu";
 import { WordDisplay } from "@/components/WordDisplay";
@@ -17,11 +15,6 @@ import { AudioPictureGame } from "@/components/AudioPictureGame";
 import { AudioSentenceGame } from "@/components/AudioSentenceGame";
 import { AlphabetTutor } from "@/components/AlphabetTutor";
 import { motion } from "framer-motion";
-// ⚠️ УБРАНО (мусор после переноса Settings/Login/CreateAccount/Progress
-// в футер IshvaraPage.tsx): импорты LoginModal, CreateAccountModal,
-// ProgressModal и useToast/toast — они использовались только теми
-// хендлерами и модалками, которые больше нигде не открываются (см.
-// комментарий ниже, у их прежнего места).
 
 // Helper to read URL params
 function getUrlParams() {
@@ -45,10 +38,6 @@ export default function Game() {
   const [selectedSentence, setSelectedSentence] = useState<MaterialWorld | null>(null);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [gameType, setGameType] = useState<GameType>(urlParams.game || 'picture-match');
-  // ⚠️ УБРАНО: showLoginModal / showCreateAccountModal / showProgressModal
-  // — ничто их больше не открывает (кнопка в GameHeader, которая это
-  // делала, убрана; вход/регистрация/настройки/прогресс теперь только
-  // через футер IshvaraPage.tsx). Модалки ниже по файлу тоже убраны.
   const [sessionId] = useState(() => {
     // Check if we have a session ID in localStorage
     const stored = localStorage.getItem('russian-game-session');
@@ -65,15 +54,14 @@ export default function Game() {
   const { t, language } = useLanguage();
 
   // Switch to alphabet when language changes
-
   const isFirstRender = useRef(true);
-useEffect(() => {
-  if (isFirstRender.current) {
-    isFirstRender.current = false;
-    return;
-  }
-  setGameType('alphabet-placeholder');
-}, [language]);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setGameType('alphabet-placeholder');
+  }, [language]);
 
   // Extended Word type with optional translation
   type WordWithTranslation = Word & { translatedWord?: string };
@@ -173,7 +161,7 @@ useEffect(() => {
         setCurrentWordIndex(index);
       }
     }
-  }, [words.length]); // Only run when words first load
+  }, [words.length]);
 
   // Update URL when game state changes
   useEffect(() => {
@@ -197,7 +185,6 @@ useEffect(() => {
         body: JSON.stringify(answerData),
       }).then(res => res.json()),
     onSuccess: (data, variables) => {
-      // Only invalidate today's progress when answer is correct
       if (variables.isCorrect) {
         queryClient.invalidateQueries({ queryKey: ["/api/progress/today", sessionId] });
       }
@@ -205,12 +192,10 @@ useEffect(() => {
   });
 
   const handlePictureSelect = (word: Word, isCorrect: boolean) => {
-    // Prevent multiple selections while processing
     if (selectedPicture || showCelebration) return;
 
     setSelectedPicture(word);
 
-    // Record the answer in the database
     if (currentWord) {
       recordAnswerMutation.mutate({
         wordId: currentWord.id,
@@ -224,7 +209,6 @@ useEffect(() => {
       setCorrectAnswers(prev => prev + 1);
       setShowCelebration(true);
     } else {
-      // Reset selection after a moment
       setTimeout(() => {
         setSelectedPicture(null);
       }, 1500);
@@ -232,12 +216,10 @@ useEffect(() => {
   };
 
   const handleWordComplete = (isCorrect: boolean) => {
-    // Prevent multiple selections while processing
     if (selectedPicture || showCelebration) return;
 
     setSelectedPicture({ id: 'spell-complete', word: 'spell-complete', image: '', audio: '' } as Word);
 
-    // Record the answer in the database
     if (currentWord) {
       recordAnswerMutation.mutate({
         wordId: currentWord.id,
@@ -251,16 +233,13 @@ useEffect(() => {
       setCorrectAnswers(prev => prev + 1);
       setShowCelebration(true);
     } else {
-      // Reset selection after a moment
       setTimeout(() => {
         setSelectedPicture(null);
       }, 1500);
     }
   };
 
-  // Handler for incorrect letter selections in SpellWordGame
   const handleSpellIncorrectLetter = (letter: string) => {
-    // Record incorrect answer in the database
     if (currentWord) {
       recordAnswerMutation.mutate({
         wordId: currentWord.id,
@@ -337,13 +316,11 @@ useEffect(() => {
       setCorrectAnswers(prev => prev + 1);
       setShowCelebration(true);
     } else {
-      // Show error for a moment, then move to next word
       setTimeout(() => {
         setSelectedPicture(null);
-        // Move to next word after wrong answer
         queryClient.invalidateQueries({ queryKey: ["/api/words", sessionId, "all"] });
         if (currentWordIndex + 1 >= words.length) {
-          setCurrentWordIndex(0); // Loop back to start
+          setCurrentWordIndex(0);
         } else {
           setCurrentWordIndex(prev => prev + 1);
         }
@@ -369,12 +346,10 @@ useEffect(() => {
       setCorrectAnswers(prev => prev + 1);
       setShowCelebration(true);
     } else {
-      // Show error for a moment, then move to next sentence
       setTimeout(() => {
         setSelectedSentence(null);
-        // Move to next sentence after wrong answer
         if (currentSentenceIndex + 1 >= materialWorldActivities.length) {
-          setCurrentSentenceIndex(0); // Loop back to start
+          setCurrentSentenceIndex(0);
         } else {
           setCurrentSentenceIndex(prev => prev + 1);
         }
@@ -387,17 +362,15 @@ useEffect(() => {
     setSelectedPicture(null);
     setSelectedSentence(null);
 
-    // Handle audio-sentence game separately
     if (gameType === 'audio-sentence') {
       if (currentSentenceIndex + 1 >= materialWorldActivities.length) {
-        setCurrentSentenceIndex(0); // Loop back to start
+        setCurrentSentenceIndex(0);
       } else {
         setCurrentSentenceIndex(prev => prev + 1);
       }
       return;
     }
 
-    // Invalidate words query to get updated list (after celebration is done)
     queryClient.invalidateQueries({ queryKey: ["/api/words", sessionId, "all"] });
 
     if (currentWordIndex + 1 >= words.length) {
@@ -406,12 +379,6 @@ useEffect(() => {
       setCurrentWordIndex(prev => prev + 1);
     }
   };
-
-
-  // ⚠️ УБРАНО: handleSettingsClick — открывал toast с кнопкой сброса
-  // прогресса, вызывался только из onSettingsClick в GameHeader.
-  // Настройки/сброс прогресса теперь доступны через футер
-  // IshvaraPage.tsx, а не отсюда.
 
   const handleRestartGame = () => {
     setCurrentWordIndex(0);
@@ -423,9 +390,6 @@ useEffect(() => {
     setSelectedSentence(null);
   };
 
-  // ⚠️ УБРАНО: handleResetProgress — вызывался только изнутри
-  // handleSettingsClick (см. выше), больше нигде не используется.
-
   const handleGameTypeChange = (newGameType: GameType) => {
     setGameType(newGameType);
     setSelectedPicture(null);
@@ -433,17 +397,11 @@ useEffect(() => {
     setShowCelebration(false);
   };
 
-  // ⚠️ УБРАНО: handleLoginClick / handleCreateAccountClick /
-  // switchToCreateAccount / switchToLogin — управляли
-  // showLoginModal/showCreateAccountModal, которых больше нет; вход и
-  // регистрация теперь только через футер IshvaraPage.tsx.
-
   const handleSyllableAnswer = (isCorrect: boolean) => {
     if (selectedPicture || showCelebration) return;
 
     setSelectedPicture({ id: 'syllable-answer', word: 'syllable-answer', image: '', audio: '' } as Word);
 
-    // Record the answer in the database
     if (currentWord) {
       recordAnswerMutation.mutate({
         wordId: currentWord.id,
@@ -457,7 +415,6 @@ useEffect(() => {
       setCorrectAnswers(prev => prev + 1);
       setShowCelebration(true);
     } else {
-      // Reset selection after a moment
       setTimeout(() => {
         setSelectedPicture(null);
       }, 1500);
@@ -514,7 +471,6 @@ useEffect(() => {
     );
   }
 
-  // Show loading only if we don't have the current word at all
   const isInitialLoading = !currentWord;
 
   if (isInitialLoading) {
@@ -529,49 +485,13 @@ useEffect(() => {
   }
 
   return (
-    // ⚠️ ПРАВКА (адаптивная вёрстка / мобильные устройства): на
-    // мобильном (< sm) убраны h-screen/overflow-hidden — иначе
-    // контент AlphabetTutor в вертикальном стеке (Functions → панель
-    // письма → таблица букв) не помещался в жёстко заданную высоту
-    // экрана и обрезался без возможности прокрутки. На sm: и выше
-    // поведение не изменилось — фиксированная высота, без общей
-    // прокрутки страницы, как и было задумано изначально.
     <div className="h-auto overflow-visible sm:h-screen sm:overflow-hidden flex flex-col">
-      {/* ⚠️ ПРАВКА: GameHeader больше не принимает onSettingsClick /
-          onLoginClick / onCreateAccountClick / onProgressClick — этих
-          пропсов больше нет в GameHeaderProps (см. GameHeader.tsx —
-          AuthDropdown и связанные с ним пропы убраны из шапки, вход /
-          регистрация / настройки теперь через футер на IshvaraPage.tsx).
-          Раньше эти пропы всё ещё передавались сюда по инерции — из-за
-          этого TypeScript ругался: "onSettingsClick does not exist on
-          type GameHeaderProps". Убрал их из вызова; сам GameHeader
-          теперь получает только то, что ему действительно нужно. */}
       <GameHeader
         currentWordIndex={currentWordIndex}
         totalWords={words.length}
         correctAnswersToday={todayProgress?.correctAnswersToday || 0}
       />
 
-      {/* ⚠️ ПРАВКА (устранение скролла в AlphabetTutor): main теперь
-          flex-колонка вместо простого блочного контейнера. Раньше
-          GameMenu и игровой контент шли друг под другом внутри main
-          с overflow-y-auto — AlphabetTutor внутри запрашивал h-full
-          (100% высоты main), но GameMenu уже занимал часть этой
-          высоты сверху, из-за чего суммарная высота превышала место
-          в main и появлялся вертикальный скролл, сколько бы ни
-          подгонялись пропорции внутри самого AlphabetTutor.
-          Теперь: GameMenu — flex-shrink-0 (занимает свою естественную
-          высоту), а контент игры — flex-1 min-h-0 overflow-y-auto
-          (получает ровно оставшееся место; AlphabetTutor с его
-          h-full корректно вписывается в эту высоту). Скролл для
-          остальных игр (picture-match и т.д.) сохранён — он теперь
-          просто на внутренней обёртке, а не на main целиком.
-          ⚠️ ПРАВКА (мобильная адаптивность): overflow-hidden на main
-          заменён на overflow-visible на мобильном (< sm) — иначе
-          контент AlphabetTutor, растянутый в вертикальный стек,
-          обрезался бы этим же свойством ещё до того, как получал бы
-          шанс прокрутиться во внутренней обёртке ниже. На sm: и
-          выше — прежнее поведение (overflow-hidden). */}
       <main className="flex-1 overflow-visible sm:overflow-hidden max-w-6xl mx-auto px-4 pt-2 pb-8 w-full flex flex-col">
         <div className="flex-shrink-0">
           <GameMenu
@@ -580,14 +500,6 @@ useEffect(() => {
           />
         </div>
 
-        {/* ⚠️ ПРАВКА (мобильная адаптивность): на мобильном (< sm)
-            эта обёртка больше не имеет собственной высоты/прокрутки
-            (overflow-visible, без min-h-0/flex-1 constraints по
-            высоте) — весь контент, включая AlphabetTutor, просто
-            растёт по естественной высоте, и скроллится сама страница
-            (см. правку на корневом div выше). На sm: и выше —
-            исходное поведение: flex-1 min-h-0 overflow-y-auto,
-            собственная внутренняя прокрутка в пределах main. */}
         <div className="overflow-visible sm:flex-1 sm:min-h-0 sm:overflow-y-auto">
           {gameType === 'alphabet-placeholder' && (
             <AlphabetTutor />
@@ -704,18 +616,12 @@ useEffect(() => {
           )}
         </div>
       </main>
+
       <CelebrationOverlay
         key={`celebration-${currentWord?.id}-${correctAnswers}`}
         isVisible={showCelebration}
         onNext={handleNextWord}
       />
-      {/* ⚠️ УБРАНО: LoginModal / CreateAccountModal / ProgressModal —
-          открывались только из showLoginModal/showCreateAccountModal/
-          showProgressModal, которых больше нет в этом файле. Если эти
-          модалки всё ещё нужны где-то в приложении — их должен
-          рендерить компонент, который реально их открывает (например,
-          футер на IshvaraPage.tsx или общий layout в App.tsx), а не
-          game.tsx. */}
     </div>
   );
 }
